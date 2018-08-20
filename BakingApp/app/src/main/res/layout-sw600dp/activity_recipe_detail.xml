@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    tools:context=".activities.RecipeDetailActivity"
+    android:id="@+id/recipe_master_detail_linear_layout">
+
+    <!-- Fragment for the recipe detail -->
+    <FrameLayout
+        android:layout_width="400dp"
+        android:layout_height="match_parent"
+        android:id="@+id/fragment_view_recipe_detail"
+        android:name="com.example.android.bakingapp.fragments.RecipeDetailFragment"/>
+
+    <!-- Divider line -->
+    <View
+        android:layout_width="1dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/master_detail_divider"
+        android:background="@color/colorPrimaryDark"/>
+
+    <!-- Linear Layout to hold the Fragments of the step detail -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/step_detail_linear_layout"
+        android:orientation="vertical"
+        android:layout_gravity="center_horizontal">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/fragment_step_detail_text_video"
+            android:name="com.example.android.bakingapp.fragments.StepDetailFragment"
+            android:layout_marginTop="4dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"/>
+
+    </LinearLayout>
+
+
+</LinearLayout>

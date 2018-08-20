@@ -1,0 +1,28 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.android.bakingapp.fragments.RecipeDetailFragment">
+
+    <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <GridView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/fragment_ingredients_grid_view"
+            android:numColumns="2"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/fragment_steps_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/fragment_ingredients_grid_view"/>
+
+    </android.support.constraint.ConstraintLayout>
+
+</FrameLayout>
