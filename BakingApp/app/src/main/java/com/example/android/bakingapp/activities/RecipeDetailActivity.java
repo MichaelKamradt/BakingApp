@@ -33,6 +33,8 @@ public class RecipeDetailActivity extends AppCompatActivity implements
 
     // TAG for logging
     private static final String TAG = RecipeDetailActivity.class.getSimpleName();
+    private static final String STEP_DETAIL_FRAGMENT_TAG = StepDetailFragment.class.getSimpleName();
+    private static final String BUTTON_FRAGMENT_TAG = ButtonFragment.class.getSimpleName();
 
     // Recipe member variables
     private int mRecipeId;
@@ -41,6 +43,7 @@ public class RecipeDetailActivity extends AppCompatActivity implements
     // Key for recipe Id
     private static final String STEP_ID = "step_id";
     private static final String RECIPE_ID = "recipe_id";
+    private static final String MASTER_DETAIL_ID = "master_detail_id";
 
     // Master Detail View
     private boolean mMasterDetail;
@@ -54,6 +57,7 @@ public class RecipeDetailActivity extends AppCompatActivity implements
         if (savedInstanceState != null) {
             mRecipeId = savedInstanceState.getInt(RECIPE_ID);
             mStepId = savedInstanceState.getInt(STEP_ID);
+            mMasterDetail = savedInstanceState.getBoolean(MASTER_DETAIL_ID);
         } else {
             // Get the intent data
             Intent passedIntent = getIntent();
@@ -67,19 +71,18 @@ public class RecipeDetailActivity extends AppCompatActivity implements
             } else {
                 Log.d(TAG, "The recipe was not loaded properly");
             }
-        }
-
-        // Depending on the layout, we either want to inflate just the recipe detail or step and recipe detail
-        if (findViewById(R.id.recipe_master_detail_linear_layout) != null) {
-            // Set the layout bool
-            mMasterDetail = true;
-            // Inflate the Recipe Detail. Step Detail inflate upon click
-            instantiateStepDetailFragments(mRecipeId, mStepId);
-            inflateRecipeDetailFragment();
-        } else {
-            // Set the layout bool
-            mMasterDetail = false;
-            inflateRecipeDetailFragment();
+            // Depending on the layout, we either want to inflate just the recipe detail or step and recipe detail
+            if (findViewById(R.id.recipe_master_detail_linear_layout) != null) {
+                // Set the layout bool
+                mMasterDetail = true;
+                // Inflate the Recipe Detail. Step Detail inflate upon click
+                instantiateStepDetailFragments(mRecipeId, mStepId);
+                inflateRecipeDetailFragment();
+            } else {
+                // Set the layout bool
+                mMasterDetail = false;
+                inflateRecipeDetailFragment();
+            }
         }
     }
 
@@ -100,15 +103,15 @@ public class RecipeDetailActivity extends AppCompatActivity implements
 
     // Instantiate Step detail Fragments
     public void instantiateStepDetailFragments(int recipeId, int stepId) {
-        // Load the long instructions in the fragment
-        StepDetailFragment stepDetailFragment = StepDetailFragment.newInstance(recipeId, stepId);
-
         // Get a fragment manager to handle the fragment
         FragmentManager fragmentManager = getSupportFragmentManager();
 
+        // Instantiate a new version of the Step Detail Fragment
+        StepDetailFragment stepDetailFragment = StepDetailFragment.newInstance(mRecipeId, stepId);
+
         // Begin the transaction and commit the fragment
         fragmentManager.beginTransaction()
-                .replace(R.id.fragment_step_detail_text_video, stepDetailFragment)
+                .add(R.id.fragment_step_detail_text_video, stepDetailFragment, STEP_DETAIL_FRAGMENT_TAG)
                 .commit();
     }
 
@@ -122,15 +125,45 @@ public class RecipeDetailActivity extends AppCompatActivity implements
 
             // Capture the current fragment
             StepDetailFragment stepDetailFragment = (StepDetailFragment) getSupportFragmentManager()
-                    .findFragmentById(R.id.fragment_step_detail_text_video);
+                    .findFragmentByTag(STEP_DETAIL_FRAGMENT_TAG);
 
-            // Update the fragment with the new step Id and update the step Id
+            // If the fragment is there, update it with the new step Id and update the step Id
             getSupportFragmentManager().beginTransaction()
-                    .detach(stepDetailFragment)
+                    .remove(stepDetailFragment)
                     .commit();
 
             // Create a new step detail fragment
             instantiateStepDetailFragments(mRecipeId, stepId);
+        }
+    }
+
+    // Bring back the video after a lock screen
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mMasterDetail) {
+            // Capture the current fragment
+            StepDetailFragment stepDetailFragment = (StepDetailFragment) getSupportFragmentManager()
+                    .findFragmentByTag(STEP_DETAIL_FRAGMENT_TAG);
+
+            getSupportFragmentManager().beginTransaction()
+                    .attach(stepDetailFragment)
+                    .commit();
+        }
+    }
+
+    // Detach the video during rotation or screenlock
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (mMasterDetail) {
+            // Capture the current fragment
+            StepDetailFragment stepDetailFragment = (StepDetailFragment) getSupportFragmentManager()
+                    .findFragmentByTag(STEP_DETAIL_FRAGMENT_TAG);
+
+            getSupportFragmentManager().beginTransaction()
+                    .detach(stepDetailFragment)
+                    .commit();
         }
     }
 
@@ -141,5 +174,6 @@ public class RecipeDetailActivity extends AppCompatActivity implements
         // Pass the recipe Id between states
         outState.putInt(RECIPE_ID, mRecipeId);
         outState.putInt(STEP_ID, mStepId);
+        outState.putBoolean(MASTER_DETAIL_ID, mMasterDetail);
     }
 }

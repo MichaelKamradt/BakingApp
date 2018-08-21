@@ -1,28 +1,20 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.android.bakingapp.fragments.RecipeDetailFragment">
+    tools:context="com.example.android.bakingapp.fragments.RecipeDetailFragment"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
 
-    <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <GridView
+        android:id="@+id/fragment_ingredients_grid_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:numColumns="1"/>
 
-        <GridView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/fragment_ingredients_grid_view"
-            android:numColumns="2"
-            app:layout_constraintTop_toTopOf="parent"/>
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/fragment_steps_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/fragment_steps_recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/fragment_ingredients_grid_view"/>
-
-    </android.support.constraint.ConstraintLayout>
-
-</FrameLayout>
+</LinearLayout>

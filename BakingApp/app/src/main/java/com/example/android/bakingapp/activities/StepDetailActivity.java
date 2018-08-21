@@ -1,6 +1,7 @@
 package com.example.android.bakingapp.activities;
 
 import android.content.Intent;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,6 +17,8 @@ public class StepDetailActivity extends AppCompatActivity implements ButtonFragm
 
     // TAG for logging
     private static final String TAG = StepDetailActivity.class.getSimpleName();
+    private static final String STEP_DETAIL_FRAGMENT_TAG = StepDetailFragment.class.getSimpleName();
+    private static final String BUTTON_FRAGMENT_TAG = ButtonFragment.class.getSimpleName();
 
     // Key for the recipe Id
     private static final String RECIPE_ID = "recipe_id";
@@ -57,39 +60,49 @@ public class StepDetailActivity extends AppCompatActivity implements ButtonFragm
             } else {
                 Log.d(TAG, "The recipe was not loaded properly");
             }
+            // Run the UI Logic
+            instantiateStepDetailFragments(mStepId);
         }
-        // Run the UI Logic
-        instantiateStepDetailFragments(mStepId);
         // Set up the buttons
         instantiateButtonFragments();
     }
 
     // Instantiate Step detail Fragments
-    public void instantiateStepDetailFragments(int stepId) {
-        // Load the long instructions in the fragment
-        StepDetailFragment stepDetailFragment = StepDetailFragment.newInstance(mRecipeId, stepId);
-
+    private void instantiateStepDetailFragments(int stepId) {
         // Get a fragment manager to handle the fragment
         FragmentManager fragmentManager = getSupportFragmentManager();
 
+        // Instantiate a new version of the Step Detail Fragment
+        StepDetailFragment stepDetailFragment = StepDetailFragment.newInstance(mRecipeId, stepId);
+
         // Begin the transaction and commit the fragment
         fragmentManager.beginTransaction()
-                .replace(R.id.fragment_step_detail_text_video, stepDetailFragment)
+                .add(R.id.fragment_step_detail_text_video, stepDetailFragment, STEP_DETAIL_FRAGMENT_TAG)
                 .commit();
     }
 
     // Instantiate Button Fragments
-    public void instantiateButtonFragments() {
-        // Load the long instructions in the fragment
-        ButtonFragment buttonFragment = ButtonFragment.newInstance(mStepId, mNumSteps);
-
+    private void instantiateButtonFragments() {
         // Get a fragment manager to handle the fragment
         FragmentManager fragmentManager = getSupportFragmentManager();
 
-        // Begin the transaction and commit the fragment
-        fragmentManager.beginTransaction()
-                .replace(R.id.button_fragment_view, buttonFragment)
-                .commit();
+        // See if the fragment if there already
+        ButtonFragment buttonFragment = (ButtonFragment) fragmentManager.findFragmentByTag(BUTTON_FRAGMENT_TAG);
+
+        if (buttonFragment == null) {
+            // Load the visibility instructions in the fragment
+            buttonFragment = ButtonFragment.newInstance(mStepId, mNumSteps);
+
+            // Begin the transaction and commit the fragment
+            fragmentManager.beginTransaction()
+                    .replace(R.id.button_fragment_view, buttonFragment)
+                    .commit();
+        } else {
+            // Begin the transaction and commit the fragment
+            fragmentManager.beginTransaction()
+                    .add(R.id.button_fragment_view, buttonFragment, BUTTON_FRAGMENT_TAG)
+                    .commit();
+        }
     }
 
     @Override
@@ -121,23 +134,38 @@ public class StepDetailActivity extends AppCompatActivity implements ButtonFragm
 
         // Capture the current fragment
         StepDetailFragment stepDetailFragment = (StepDetailFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.fragment_step_detail_text_video);
+                .findFragmentByTag(STEP_DETAIL_FRAGMENT_TAG);
 
         // If the fragment is there, update it with the new step Id and update the step Id
         mStepId = incrementedStepId;
         getSupportFragmentManager().beginTransaction()
-                .detach(stepDetailFragment)
+                .remove(stepDetailFragment)
                 .commit();
+
+        // Create a new fragment with the updated Id
         instantiateStepDetailFragments(incrementedStepId);
     }
 
-    // Release the video and text in on Pause
+    // Bring back the video after a lock screen
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Capture the current fragment
+        StepDetailFragment stepDetailFragment = (StepDetailFragment) getSupportFragmentManager()
+                .findFragmentByTag(STEP_DETAIL_FRAGMENT_TAG);
+
+        getSupportFragmentManager().beginTransaction()
+                .attach(stepDetailFragment)
+                .commit();
+    }
+
+    // Detach the video during rotation or screenlock
     @Override
     protected void onPause() {
         super.onPause();
         // Capture the current fragment
         StepDetailFragment stepDetailFragment = (StepDetailFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.fragment_step_detail_text_video);
+                .findFragmentByTag(STEP_DETAIL_FRAGMENT_TAG);
 
         getSupportFragmentManager().beginTransaction()
                 .detach(stepDetailFragment)

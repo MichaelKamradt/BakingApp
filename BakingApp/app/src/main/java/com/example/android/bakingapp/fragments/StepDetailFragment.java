@@ -20,6 +20,7 @@ import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.LoadControl;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
+import com.google.android.exoplayer2.extractor.MpegAudioHeader;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
@@ -44,6 +45,7 @@ public class StepDetailFragment extends Fragment {
     // IDs for the data pieces of the fragment used to query
     private static final String STEP_ID = "step_id";
     private static final String RECIPE_ID = "recipe_id";
+    private static final String PREVIOUS_PLAY_TIME_ID = "previous_play_time";
 
     // Instantiate the member variables
     private int mStepId;
@@ -56,6 +58,7 @@ public class StepDetailFragment extends Fragment {
     private View rootView;
     private RecipeStepsDatabase mDB;
     private Context mContext;
+    private long mPlayTimeInMillis;
 
     // Required empty public constructor
     public StepDetailFragment() {
@@ -92,17 +95,10 @@ public class StepDetailFragment extends Fragment {
         super.onCreate(savedInstanceState);
         // Instantiate the DB
         mDB = RecipeStepsDatabase.getsInstance(getActivity());
-        // Fetch variables based on the save instance state
-        if (savedInstanceState != null) {
-            mRecipeId = savedInstanceState.getInt(RECIPE_ID);
-            mStepId = savedInstanceState.getInt(STEP_ID);
-            Log.d(TAG, "SAVED INSTANT STATE " + "RECIPE ID: " + mRecipeId + " " + "STEP ID: " + mStepId);
-        } else {
-            if (getArguments() != null) {
-                mRecipeId = getArguments().getInt(RECIPE_ID);
-                mStepId = getArguments().getInt(STEP_ID);
-                Log.d(TAG, "RECIPE ID: " + mRecipeId + " " + "STEP ID: " + mStepId);
-            }
+        if (getArguments() != null) {
+            mRecipeId = getArguments().getInt(RECIPE_ID);
+            mStepId = getArguments().getInt(STEP_ID);
+            Log.d(TAG, "RECIPE ID: " + "PLAY TIME: " + mPlayTimeInMillis);
         }
     }
 
@@ -110,21 +106,24 @@ public class StepDetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        // Fetch variables based on the save instance state
+        if (savedInstanceState != null) {
+            mRecipeId = savedInstanceState.getInt(RECIPE_ID);
+            mStepId = savedInstanceState.getInt(STEP_ID);
+            mPlayTimeInMillis = savedInstanceState.getLong(PREVIOUS_PLAY_TIME_ID);
+            Log.d(TAG, "SAVED INSTANT STATE " + "PLAY TIME: " + mPlayTimeInMillis);
+        }
+
         // Inflate the Step Detail fragment layout
         rootView = inflater.inflate(R.layout.fragment_step_detail, container, false);
 
         return rootView;
     }
 
-    // Get the variables when the activity is created
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-    }
-
     @Override
     public void onStart() {
         super.onStart();
+        // Make the DB call and inflate the UI
         setUpSingleStepViewModel();
     }
 
@@ -151,6 +150,8 @@ public class StepDetailFragment extends Fragment {
             // Prepare and play when ready
             mExoPlayer.prepare(mediaSource);
             mExoPlayer.setPlayWhenReady(true);
+            // Set logic for picking up where the player left off
+            mExoPlayer.seekTo(mPlayTimeInMillis);
         } else {
             // Hide the video if there isn't one
             mExoPlayerView = (SimpleExoPlayerView) rootView.findViewById(R.id.fragment_step_video_view);
@@ -173,7 +174,6 @@ public class StepDetailFragment extends Fragment {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Log.d(TAG, "RUN ON UI THREAD " + "RECIPE ID: " + mRecipeId + " " + "STEP ID: " + mStepId);
                         // Populate the UI on the main thread
                         updateUIViews(recipeStep.description, recipeStep.videoURL);
                     }
@@ -199,24 +199,26 @@ public class StepDetailFragment extends Fragment {
 
         // Initialize the player
         initializeExoPlayer(mVideoUri);
-
     }
 
     // Function to release/stop the ExoPlayer
     private void releasePlayer() {
         if (mExoPlayer != null) {
+            mPlayTimeInMillis = mExoPlayer.getCurrentPosition();
+            Log.d(TAG, "RELEASE PLAYER PLAY TIME: " + mPlayTimeInMillis);
             mExoPlayer.release();
             mExoPlayer.stop();
             mExoPlayer = null;
         }
     }
 
-    // Set the Player to stop in pause and destroy
+    // Set the Player to stop in pause / stop / destroy
     @Override
     public void onPause() {
         super.onPause();
         releasePlayer();
     }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -229,23 +231,12 @@ public class StepDetailFragment extends Fragment {
         releasePlayer();
     }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        releasePlayer();
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        releasePlayer();
-    }
-
     // Create the onSaveInstanceState logic to retreive the existing variables
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(RECIPE_ID, mRecipeId);
         outState.putInt(STEP_ID, mStepId);
+        outState.putLong(PREVIOUS_PLAY_TIME_ID, mPlayTimeInMillis);
     }
 }
