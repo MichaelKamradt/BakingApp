@@ -19,6 +19,7 @@ public class StepsDBModel {
     public int stepIndex;
     public int stepId;
     public int recipeId;
+    public String recipeName;
     public String shortDescription;
     public String description;
     public String videoURL;
@@ -30,12 +31,13 @@ public class StepsDBModel {
     }
 
     // Constructor for the model
-    public StepsDBModel(int stepIndex, int stepId, int recipeId, String shortDescription, String description, String videoURL, String thumbnailURL) {
+    public StepsDBModel(int stepIndex, int stepId, int recipeId, String recipeName, String shortDescription, String description, String videoURL, String thumbnailURL) {
 
         // Assign the variables
         this.stepIndex = stepIndex;
         this.stepId = stepId;
         this.recipeId = recipeId;
+        this.recipeName = recipeName;
         this.shortDescription = shortDescription;
         this.description = description;
         this.videoURL = videoURL;
@@ -44,13 +46,14 @@ public class StepsDBModel {
     }
 
     // Constructor for the model
-    public static StepsDBModel createStepsDBModel(StepModel stepModel, int recipeId, int stepIndex) {
+    public static StepsDBModel createStepsDBModel(StepModel stepModel, int recipeId, int stepIndex, String recipeName) {
 
         // Create the stepDBmodel object
         StepsDBModel stepsDBModel = new StepsDBModel(
                 stepIndex,
                 stepModel.id,
                 recipeId,
+                recipeName,
                 stepModel.shortDescription,
                 stepModel.description,
                 stepModel.videoURL,

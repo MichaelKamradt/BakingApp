@@ -13,7 +13,7 @@ import com.example.android.bakingapp.models.StepModel;
  */
 
 // Annotate the Recipe Steps DB with the proper Android Components
-@Database(entities = {StepsDBModel.class}, version = 4, exportSchema = false)
+@Database(entities = {StepsDBModel.class}, version = 5, exportSchema = false)
 public abstract class RecipeStepsDatabase extends RoomDatabase {
 
     // For logging identification

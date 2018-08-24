@@ -17,8 +17,9 @@ public class DBUtils {
 
         // Loop through the recipes to get the steps
         for (int i = 0; i < recipes.length; i++) {
-            // Recipe ID
+            // Recipe ID and Name
             final int recipeId = recipes[i].id;
+            final String recipeName = recipes[i].name;
             // Steps of the recipe
             StepModel[] steps = recipes[i].steps;
             // Loop through the steps and add them to the DB
@@ -26,14 +27,13 @@ public class DBUtils {
                 // Step index
                 final int stepIndex = stepI;
                 // Create the StepDBModel
-                final StepsDBModel stepsDBModel = StepsDBModel.createStepsDBModel(steps[stepI], recipeId, stepIndex);
+                final StepsDBModel stepsDBModel = StepsDBModel.createStepsDBModel(steps[stepI], recipeId, stepIndex, recipeName);
                 // Write the Step to the DB
                 AppExecutors.getsInstance().diskIO().execute(new Runnable() {
                     @Override
                     public void run() {
                         if (recipeStepsDatabase.stepsDao().getSingleStep(recipeId, stepIndex) == null) {
                             recipeStepsDatabase.stepsDao().insertStep(stepsDBModel);
-                            Log.d("Adding Step item", "ADDING NEW STEP" + stepIndex + " REC: " + recipeId);
                         } else {
                             Log.d("Adding Step item", "Step already added" + stepIndex + " REC: " + recipeId);
                         }

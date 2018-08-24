@@ -64,7 +64,7 @@ public class RecipeDetailActivity extends AppCompatActivity implements
 
             // Ensure it has the right extra
             if (passedIntent.hasExtra(RecipeActivity.RECIPE_ID)) {
-                // Get the recipe item
+                // Get the recipe item and title
                 mRecipeId = passedIntent.getIntExtra(RecipeActivity.RECIPE_ID, 0);
                 // Set the step equal to the first upon instantiation
                 mStepId = 0;
@@ -171,7 +171,7 @@ public class RecipeDetailActivity extends AppCompatActivity implements
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        // Pass the recipe Id between states
+        // Pass the recipe Id / title / step / masterdetail between states
         outState.putInt(RECIPE_ID, mRecipeId);
         outState.putInt(STEP_ID, mStepId);
         outState.putBoolean(MASTER_DETAIL_ID, mMasterDetail);

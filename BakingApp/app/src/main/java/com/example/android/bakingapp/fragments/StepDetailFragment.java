@@ -51,8 +51,10 @@ public class StepDetailFragment extends Fragment {
     private int mStepId;
     private int mRecipeId;
     private String mStepDescription;
+    private String mStepShortDescription;
     private String mVideoUri;
     private TextView mStepInstructionsTextView;
+    private TextView mStepTitleTextView;
     private SimpleExoPlayerView mExoPlayerView;
     private SimpleExoPlayer mExoPlayer;
     private View rootView;
@@ -155,7 +157,7 @@ public class StepDetailFragment extends Fragment {
         } else {
             // Hide the video if there isn't one
             mExoPlayerView = (SimpleExoPlayerView) rootView.findViewById(R.id.fragment_step_video_view);
-            mExoPlayerView.setVisibility(View.INVISIBLE);
+            mExoPlayerView.setVisibility(View.GONE);
             // Set the ExoPlayer to null
             mExoPlayer = null;
         }
@@ -175,7 +177,7 @@ public class StepDetailFragment extends Fragment {
                     @Override
                     public void run() {
                         // Populate the UI on the main thread
-                        updateUIViews(recipeStep.description, recipeStep.videoURL);
+                        updateUIViews(recipeStep.description, recipeStep.shortDescription, recipeStep.videoURL);
                     }
                 });
             }
@@ -183,19 +185,24 @@ public class StepDetailFragment extends Fragment {
     }
 
     // Update the views
-    public void updateUIViews(String description, String videoUri) {
+    public void updateUIViews(String description, String shortDescription, String videoUri) {
 
         // Get the UI elements
         mStepInstructionsTextView = (TextView) rootView.findViewById(R.id.step_instructions_text_view);
 
-        // Set the text
+        // Get the UI elements
+        mStepTitleTextView = (TextView) rootView.findViewById(R.id.step_title);
+
+        // Set the text of the description and short description
         mStepDescription = description;
+        mStepShortDescription = shortDescription;
 
         // Initialize the ExoPlayer
         mVideoUri = videoUri;
 
-        // Set the text description
+        // Set the text description and short description
         mStepInstructionsTextView.setText(mStepDescription);
+        mStepTitleTextView.setText(mStepShortDescription);
 
         // Initialize the player
         initializeExoPlayer(mVideoUri);

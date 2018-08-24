@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
+import android.widget.TextView;
 
 import com.example.android.bakingapp.R;
 import com.example.android.bakingapp.activities.StepDetailActivity;
@@ -59,10 +60,12 @@ public class RecipeDetailFragment extends Fragment implements StepAdapter.stepCl
     private StepAdapter mStepAdapter;
     private IngredientAdapter mIngredientsAdapter;
     private GridView mIngredientsGridView;
+    private TextView mRecipeTitleTextView;
 
     // Data member variables
     private IngredientsDBModel[] mIngredients;
     private StepsDBModel[] mSteps;
+    private String mRecipeTitle;
 
     // Required empty constructor
     public RecipeDetailFragment() {
@@ -189,6 +192,9 @@ public class RecipeDetailFragment extends Fragment implements StepAdapter.stepCl
                 // Get the length and set the steps
                 mSteps = stepsDBModels;
 
+                // Get the recipe name from the first step
+                mRecipeTitle = stepsDBModels[0].recipeName;
+
                 // Set the number of steps
                 mNumSteps = stepsDBModels.length;
 
@@ -212,6 +218,10 @@ public class RecipeDetailFragment extends Fragment implements StepAdapter.stepCl
 
     // Handler for the steps view
     private void inflateStepsUIComponent() {
+        // Inflate the Title TextView and set the title
+        mRecipeTitleTextView = (TextView) rootView.findViewById(R.id.recipe_title);
+        mRecipeTitleTextView.setText(mRecipeTitle);
+
         // Define the recyclerview for the steps
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.fragment_steps_recycler_view);
 

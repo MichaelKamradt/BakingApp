@@ -4,17 +4,30 @@
     android:layout_height="match_parent"
     tools:context="com.example.android.bakingapp.fragments.RecipeDetailFragment"
     android:fitsSystemWindows="true"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/cardview_light_background">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/recipe_title"
+        tools:text="Sample text!"
+        style="@style/BakingAppTitleTextStyle"/>
 
     <GridView
         android:id="@+id/fragment_ingredients_grid_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:numColumns="1"/>
+        android:numColumns="1"
+        android:paddingLeft="@dimen/ingredientGridViewPadding"
+        android:paddingTop="@dimen/ingredientGridViewPadding"
+        android:paddingBottom="@dimen/ingredientGridViewPadding"
+        android:paddingRight="@dimen/ingredientGridViewPadding"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/fragment_steps_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        style=""/>
 
 </LinearLayout>

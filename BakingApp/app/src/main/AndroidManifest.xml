@@ -12,7 +12,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activities.RecipeActivity">
+        <activity android:name=".activities.RecipeActivity"
+            android:theme="@style/ToolBarStyle">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -20,8 +21,14 @@
             </intent-filter>
         </activity>
         <activity android:name=".activities.RecipeDetailActivity"
-            android:parentActivityName=".activities.RecipeActivity"/>
-        <activity android:name=".activities.StepDetailActivity"></activity>
+            android:parentActivityName=".activities.RecipeActivity"
+            android:theme="@style/ToolBarStyle"/>
+        <activity android:name=".activities.StepDetailActivity"
+            android:theme="@style/ToolBarStyle"></activity>
+
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
     </application>
 
 </manifest>

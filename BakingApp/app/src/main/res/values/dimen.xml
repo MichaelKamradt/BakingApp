@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="cardViewMargin">4dp</dimen>
+    <dimen name="CardTextViewPadding">8dp</dimen>
+    <dimen name="ingredientTextViewPadding">1dp</dimen>
+    <dimen name="recipeTextSize">32sp</dimen>
+    <dimen name="titleTextSize">32sp</dimen>
+    <dimen name="stepTextSize">24sp</dimen>
+    <dimen name="ingredientTextSize">12sp</dimen>
+    <dimen name="instructionsTextSize">16sp</dimen>
+    <dimen name="ingredientGridViewPadding">8dp</dimen>
+    <dimen name="exoPlayerMargin">4dp</dimen>
+    <dimen name="stepDetailTextViewPadding">4dp</dimen>
+    <dimen name="buttonFontSize">16sp</dimen>
+
+</resources>
