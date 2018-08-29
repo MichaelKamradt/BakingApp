@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.android.bakingapp.R;
+import com.example.android.bakingapp.database.RecipeDBModel;
 import com.example.android.bakingapp.models.RecipeModel;
 import com.squareup.picasso.Picasso;
 
@@ -36,7 +37,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.recipeView
     final private recipeClickHandler mRecipeClickHandler;
 
     // String array that contains the movie JSON objects
-    private RecipeModel[] mRecipes;
+    private RecipeDBModel[] mRecipes;
 
     // Create an interface for the RecipeActivity click handler
     public interface recipeClickHandler {
@@ -70,7 +71,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.recipeView
     @Override
     public void onBindViewHolder(recipeViewHolder holder, final int position) {
         // Get the position of the RecyclerView item
-        RecipeModel recipe = mRecipes[position];
+        RecipeDBModel recipe = mRecipes[position];
 
         // Add the recipe name to the text view
         String recipeName = recipe.name;
@@ -120,7 +121,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.recipeView
             int adapterPosition = getAdapterPosition();
 
             // Get the recipe in that position of the adapter
-            RecipeModel clickedRecipeModel = mRecipes[adapterPosition];
+            RecipeDBModel clickedRecipeModel = mRecipes[adapterPosition];
 
             // Pass it to the click handler interface
             mRecipeClickHandler.onRecipeItemClick(clickedRecipeModel.id);
@@ -128,7 +129,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.recipeView
     }
 
     // Used to set the new data if there is new data. No need to reconstruct the StepAdapter
-    public void setRecipeResponseData(RecipeModel[] recipes) {
+    public void setRecipeResponseData(RecipeDBModel[] recipes) {
         mRecipes = recipes;
         notifyDataSetChanged();
     }

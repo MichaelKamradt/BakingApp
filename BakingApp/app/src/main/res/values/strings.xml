@@ -2,7 +2,9 @@
     <string name="app_name">BakingApp</string>
     <string name="next_step_string">Next step</string>
     <string name="prev_step_string">Previous step</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
+    <string name="recipe_widget_title">Baking App</string>
+    <string name="image_content_description">resfresh button</string>
 </resources>

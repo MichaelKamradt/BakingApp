@@ -13,5 +13,6 @@
     <dimen name="exoPlayerMargin">4dp</dimen>
     <dimen name="stepDetailTextViewPadding">4dp</dimen>
     <dimen name="buttonFontSize">16sp</dimen>
+    <dimen name="widgetTitleFontSize">12sp</dimen>
 
 </resources>

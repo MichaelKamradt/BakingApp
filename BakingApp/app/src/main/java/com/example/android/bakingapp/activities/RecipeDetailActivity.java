@@ -41,9 +41,9 @@ public class RecipeDetailActivity extends AppCompatActivity implements
     private int mStepId;
 
     // Key for recipe Id
-    private static final String STEP_ID = "step_id";
-    private static final String RECIPE_ID = "recipe_id";
-    private static final String MASTER_DETAIL_ID = "master_detail_id";
+    public static final String STEP_ID = "step_id";
+    public static final String RECIPE_ID = "recipe_id";
+    public static final String MASTER_DETAIL_ID = "master_detail_id";
 
     // Master Detail View
     private boolean mMasterDetail;

@@ -12,7 +12,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activities.RecipeActivity"
+        <activity
+            android:name=".activities.RecipeActivity"
             android:theme="@style/ToolBarStyle">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -20,15 +21,35 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.RecipeDetailActivity"
+        <activity
+            android:name=".activities.RecipeDetailActivity"
             android:parentActivityName=".activities.RecipeActivity"
-            android:theme="@style/ToolBarStyle"/>
-        <activity android:name=".activities.StepDetailActivity"
-            android:theme="@style/ToolBarStyle"></activity>
+            android:theme="@style/ToolBarStyle" />
+        <activity
+            android:name=".activities.StepDetailActivity"
+            android:theme="@style/ToolBarStyle" />
 
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
+
+        <receiver android:name=".widget.RecipeWidget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/recipe_widget_info" />
+        </receiver>
+
+        <!-- Widget intent service -->
+        <service android:name=".widget.RefreshRecipeListService"
+            android:exported="false"/>
+        <!-- GridView service -->
+        <service android:name=".widget.GridWidgetService"
+            android:permission="android.permission.BIND_REMOTEVIEWS"/>
+
     </application>
 
 </manifest>

@@ -12,6 +12,42 @@ import com.example.android.bakingapp.models.StepModel;
 
 public class DBUtils {
 
+    // Handler to write all of them
+    public static void writeDataToDatabases(final RecipeDatabase recipeDatabase,
+                                     final RecipeStepsDatabase recipeStepsDatabase,
+                                     final IngredientsDatabase recipeIngredientsDatabase,
+                                     RecipeModel[] recipes) {
+        writeRecipesToDatabase(recipeDatabase, recipes);
+        writeStepsToDatabase(recipeStepsDatabase, recipes);
+        writeIngredientsToDatabase(recipeIngredientsDatabase, recipes);
+    }
+
+    // Handler to take the recipes and write them to the DB
+    public static void writeRecipesToDatabase(final RecipeDatabase recipeDatabase, RecipeModel[] recipes) {
+
+        // Loop through the recipes to get the steps
+        for (int i = 0; i < recipes.length; i++) {
+            // Recipe ID and Name
+            final int recipeId = recipes[i].id;
+            final String recipeName = recipes[i].name;
+            final int recipeServings = recipes[i].servings;
+            final String recipeImage = recipes[i].image;
+            // Make the recipe object
+            final RecipeDBModel recipeDBModel = new RecipeDBModel(recipeId, i, recipeName, recipeImage, recipeServings);
+            // Write the Step to the DB
+            AppExecutors.getsInstance().diskIO().execute(new Runnable() {
+                @Override
+                public void run() {
+                    if (recipeDatabase.recipeDAO().getSingleRecipe(recipeId) == null) {
+                        recipeDatabase.recipeDAO().insertStep(recipeDBModel);
+                    } else {
+                        Log.d("Adding Recipe item", "Recipe already added" + recipeId);
+                    }
+                }
+            });
+            }
+    }
+
     // Handler to take the StepModels, Recipe ID, and write them to the DB
     public static void writeStepsToDatabase(final RecipeStepsDatabase recipeStepsDatabase, RecipeModel[] recipes) {
 
