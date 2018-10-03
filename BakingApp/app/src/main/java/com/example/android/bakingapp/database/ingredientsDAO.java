@@ -19,6 +19,9 @@ public interface ingredientsDAO {
     @Query("SELECT * FROM recipeIngredients WHERE recipeId = :recipeId ORDER BY id ASC")
     LiveData<IngredientsDBModel[]> loadIngredients(int recipeId);
 
+    @Query("SELECT * FROM recipeIngredients WHERE recipeId = :recipeId ORDER BY id ASC")
+    IngredientsDBModel[] loadIngredientsNonLiveData(int recipeId);
+
     @Insert
     void insertIngredient(IngredientsDBModel ingredientsDBModel);
 

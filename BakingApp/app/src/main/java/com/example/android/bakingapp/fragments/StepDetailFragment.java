@@ -2,6 +2,7 @@ package com.example.android.bakingapp.fragments;
 
 import android.content.Context;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -46,6 +47,7 @@ public class StepDetailFragment extends Fragment {
     private static final String STEP_ID = "step_id";
     private static final String RECIPE_ID = "recipe_id";
     private static final String PREVIOUS_PLAY_TIME_ID = "previous_play_time";
+    private static final String PLAYBACK_READY = "playback_ready";
 
     // Instantiate the member variables
     private int mStepId;
@@ -61,6 +63,7 @@ public class StepDetailFragment extends Fragment {
     private RecipeStepsDatabase mDB;
     private Context mContext;
     private long mPlayTimeInMillis;
+    private boolean mPlaybackReady = true;
 
     // Required empty public constructor
     public StepDetailFragment() {
@@ -113,6 +116,7 @@ public class StepDetailFragment extends Fragment {
             mRecipeId = savedInstanceState.getInt(RECIPE_ID);
             mStepId = savedInstanceState.getInt(STEP_ID);
             mPlayTimeInMillis = savedInstanceState.getLong(PREVIOUS_PLAY_TIME_ID);
+            mPlaybackReady = savedInstanceState.getBoolean(PLAYBACK_READY);
             Log.d(TAG, "SAVED INSTANT STATE " + "PLAY TIME: " + mPlayTimeInMillis);
         }
 
@@ -149,9 +153,9 @@ public class StepDetailFragment extends Fragment {
                     new DefaultExtractorsFactory(),
                     null,
                     null);
-            // Prepare and play when ready
+            // Prepare and play when ready (based on the saved instant state value)
             mExoPlayer.prepare(mediaSource);
-            mExoPlayer.setPlayWhenReady(true);
+            mExoPlayer.setPlayWhenReady(mPlaybackReady);
             // Set logic for picking up where the player left off
             mExoPlayer.seekTo(mPlayTimeInMillis);
         } else {
@@ -212,6 +216,7 @@ public class StepDetailFragment extends Fragment {
     private void releasePlayer() {
         if (mExoPlayer != null) {
             mPlayTimeInMillis = mExoPlayer.getCurrentPosition();
+            mPlaybackReady = mExoPlayer.getPlayWhenReady();
             Log.d(TAG, "RELEASE PLAYER PLAY TIME: " + mPlayTimeInMillis);
             mExoPlayer.release();
             mExoPlayer.stop();
@@ -223,19 +228,17 @@ public class StepDetailFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        releasePlayer();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        releasePlayer();
+        if (Build.VERSION.SDK_INT <= 23) {
+            releasePlayer();
+        }
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        releasePlayer();
+        if (Build.VERSION.SDK_INT >= 24) {
+            releasePlayer();
+        }
     }
 
     // Create the onSaveInstanceState logic to retreive the existing variables
@@ -245,5 +248,6 @@ public class StepDetailFragment extends Fragment {
         outState.putInt(RECIPE_ID, mRecipeId);
         outState.putInt(STEP_ID, mStepId);
         outState.putLong(PREVIOUS_PLAY_TIME_ID, mPlayTimeInMillis);
+        outState.putBoolean(PLAYBACK_READY, mPlaybackReady);
     }
 }
