@@ -1,0 +1,8 @@
+Oct 21, 2018 5:33:05 PM java.util.prefs.WindowsPreferences <init>
+WARNING: Could not open/create prefs root node Software\JavaSoft\Prefs at root 0x80000002. Windows RegCreateKeyEx(...) returned error code 5.
+Oct 21, 2018 5:33:06 PM com.google.appengine.tools.development.SystemPropertiesManager setSystemProperties
+INFO: Overwriting system property key 'java.util.logging.config.file', value 'C:\Users\micha\AppData\Local\Google\Cloud SDK\google-cloud-sdk\platform\google_appengine\google\appengine\tools\java\config\sdk\logging.properties' with value 'WEB-INF/logging.properties' from 'C:\Users\micha\Documents\Android_Work\Nanodegree_Program\FinalProject\backend\build\exploded-backend\WEB-INF\appengine-web.xml'
+
+************************************************
+Could not open the requested socket: Address already in use: bind
+Try overriding --address and/or --port.
